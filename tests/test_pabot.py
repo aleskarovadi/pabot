@@ -1,13 +1,13 @@
 import unittest
 import time
-import platform
-import os
+import sys
 from pabot import pabot
 
 
 class PabotTests(unittest.TestCase):
 
     def setUp(self):
+        py_version = ''.join(map(str, sys.version_info[:2]))
         self._options, self._datasources, self._pabot_args = pabot._parse_args(['--pabotlib',
                                                                                 '--verbose',
                                                                                 '--argumentfile1',
@@ -16,9 +16,10 @@ class PabotTests(unittest.TestCase):
                                                                                 'tests/failingarg.txt',
                                                                                 '--resourcefile',
                                                                                 'tests/valueset.dat',
+                                                                                '--outputdir',
+                                                                                'output/{py}'.format(py=py_version),
                                                                                 'tests/fixtures'])
-        self._outs_dir = os.path.join(pabot._output_dir(self._options),
-                                      platform.python_version())
+        self._outs_dir = pabot._output_dir(self._options)
 
     def test_parse_args(self):
         options, datasources, pabot_args = pabot._parse_args(
