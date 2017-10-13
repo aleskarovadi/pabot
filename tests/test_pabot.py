@@ -1,6 +1,6 @@
 import unittest
 import time
-import sys
+import platform
 import os
 from pabot import pabot
 
@@ -17,7 +17,8 @@ class PabotTests(unittest.TestCase):
                                                                                 '--resourcefile',
                                                                                 'tests/valueset.dat',
                                                                                 'tests/fixtures'])
-        self._outs_dir = pabot._output_dir(self._options)
+        self._outs_dir = os.path.join(pabot._output_dir(self._options),
+                                      platform.python_version())
 
     def test_parse_args(self):
         options, datasources, pabot_args = pabot._parse_args(
@@ -61,14 +62,13 @@ class PabotTests(unittest.TestCase):
         suite_names = ['Fixtures.Suite One',
                        'Fixtures.Suite Second',
                        'Fixtures.Suite&(Specia|)Chars']
-        output_dir = os.path.join(self._outs_dir, 'py{}'.format(sys.version.split()[0]))
         lib_process = pabot._start_remote_library(self._pabot_args)
         pabot._parallel_execute(datasources=self._datasources,
                                 options=self._options,
-                                outs_dir=output_dir,
+                                outs_dir=self._outs_dir,
                                 pabot_args=self._pabot_args,
                                 suite_names=suite_names)
-        result_code = pabot._report_results(output_dir,
+        result_code = pabot._report_results(self._outs_dir,
                                             self._pabot_args,
                                             self._options,
                                             pabot._now(),
