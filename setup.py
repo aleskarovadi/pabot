@@ -9,7 +9,7 @@ name = 'Mikko Korpela'
 address = name.lower().replace(' ', '.')+chr(64)+'gmail.com'
 
 setup(name='robotframework-pabot',
-      version='0.38',
+      version='0.39',
       description='Parallel test runner for Robot Framework',
       long_description='A parallel executor for Robot Framework tests.'
                        'With Pabot you can split one execution into multiple and save test execution time.',
@@ -22,6 +22,7 @@ setup(name='robotframework-pabot',
             'Intended Audience :: Developers',
             'Natural Language :: English',
             'Programming Language :: Python :: 2.7',
+            'Programming Language :: Python :: 3',
             'Topic :: Software Development :: Testing',
             'License :: OSI Approved :: Apache Software License',
             'Development Status :: 5 - Production/Stable',
