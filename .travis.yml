@@ -8,13 +8,9 @@ python:
   - "3.6"
   # command to install dependencies
 install:
-#  - pip install nose-cov
-#  - pip install tissue
   - pip install tox-travis
-#  - pip install coveralls
-#  - pip install .
   # command to run tests
-script: tox
-#  - nosetests --with-cov --with-tissue --cov=pabot --cov-report term-missing
+script:
+  - tox
 after_success:
   - coveralls
