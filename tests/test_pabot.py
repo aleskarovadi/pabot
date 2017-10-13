@@ -59,6 +59,7 @@ class PabotTests(unittest.TestCase):
         suite_names = ['Fixtures.Suite One',
                        'Fixtures.Suite Second',
                        'Fixtures.Suite&(Specia|)Chars']
+        print(self._outs_dir)
         lib_process = pabot._start_remote_library(self._pabot_args)
         pabot._parallel_execute(datasources=self._datasources,
                                 options=self._options,
