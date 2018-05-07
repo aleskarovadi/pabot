@@ -5,9 +5,7 @@
 
 A parallel executor for [Robot Framework](http://www.robotframework.org) tests. With Pabot you can split one execution into multiple and save test execution time.
 
-Supported by [Reaktor](https://www.reaktor.com).
-
-![Pabot Flow](https://www.dropbox.com/s/ct1qg10rpscum4n/pabot.JPG?dl=1)
+[![Pabot presentation at robocon.io 2018](http://img.youtube.com/vi/i0RV6SJSIn8/0.jpg)](https://youtu.be/i0RV6SJSIn8 "Pabot presentation at robocon.io 2018")
 
 *My goal in creating this tool is to help you guys with big test sets. I've worked with a number of teams around the world that were doing test execution time optimisation before I created this tool. 
 I saw similarities in how Robot Framework testing systems have been built and came up with a quite good solution for the basic parallelisation problem. I hope this tool brings you joy and speeds up your test execution! If you are interested in professional support, please contact me through email firstname.lastname(at)gmail.com!* - Mikko Korpela ( those are my firstname and lastname :D )
@@ -26,6 +24,14 @@ OR clone this repository and run:
 
    - Pabot will split test execution from suite files and not from individual test level.
    - In general case you can't count on tests that haven't designed to be executed parallely to work out of the box when executing parallely. For example if the tests manipulate or use the same data, you might get yourself in trouble (one test suite logs in to the system while another logs the same session out etc.). PabotLib can help you solve these problems of concurrency. Also see [TRICKS](./TRICKS.md) for helpful tips.
+
+## Contributing to the project
+
+There are several ways you can help in improving this tool:
+
+   - Report an issue or an improvement idea to the [issue tracker](https://github.com/mkorpela/pabot/issues)
+   - Contribute by programming and making a pull request (easiest way is to work on an issue from the issue tracker)
+   - You can buy me a cup of coffee :coffee: if you find this project useful. Send [ether](https://ethereum.org/) to address [0x721135918214c477ee8a7f5c8323c17aa965cc98](https://etherscan.io/address/0x721135918214c477ee8a7f5c8323c17aa965cc98) OR old money with [PayPal](https://paypal.me/mikkorpela)
 
 ## Command-line options
 

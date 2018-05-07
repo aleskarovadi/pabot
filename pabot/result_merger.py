@@ -15,6 +15,7 @@
 #  partly based on work by Pekka Klarck
 #  by Nokia Solutions and Networks
 #  that was licensed under Apache License Version 2.0
+from __future__ import absolute_import, print_function
 
 from robot.api import ExecutionResult
 from robot.conf import RebotSettings
@@ -33,6 +34,7 @@ class ResultMerger(SuiteVisitor):
 
     def __init__(self, result, tests_root_name):
         self.root = result.suite
+        self.errors = result.errors
         self.current = None
         self._skip_until = None
         self._tests_root_name = tests_root_name
@@ -40,8 +42,9 @@ class ResultMerger(SuiteVisitor):
     def merge(self, merged):
         try:
             merged.suite.visit(self)
+            if self.errors!=merged.errors: self.errors.add(merged.errors)
         except:
-            print 'Error while merging result %s' % merged.source
+            print('Error while merging result %s' % merged.source)
             raise
 
     def start_suite(self, suite):
@@ -80,7 +83,13 @@ class ResultMerger(SuiteVisitor):
         if self._skip_until == suite:
             self._skip_until = None
             return
+        self.merge_time(suite)
         self.current = self.current.parent
+
+    def merge_time(self, suite):
+        cur = self.current
+        cur.endtime = max([cur.endtime, suite.endtime])
+        cur.starttime = min([cur.starttime, suite.starttime])
 
     def visit_message(self, msg):
         if msg.html and re.search(r'src="([^"]+\.png)"', msg.message):
