@@ -17,7 +17,7 @@ from __future__ import absolute_import
 
 try:
     import configparser
-except:
+except ImportError:
     import ConfigParser as configparser  # Support Python 2
 
 from robot.libraries.BuiltIn import BuiltIn
@@ -25,6 +25,14 @@ from robotremoteserver import RobotRemoteServer
 from robot.libraries.Remote import Remote
 from robot.api import logger
 import time
+
+
+class LockedData(object):
+
+    def __init__(self, key, value):
+        self.id = key
+        self.value = value
+        self.lock_time = time.time()
 
 
 class _PabotLib(object):
@@ -47,10 +55,15 @@ class _PabotLib(object):
         return vals
 
     def set_parallel_value_for_key(self, key, value):
+        if value:
+            value = LockedData(key, value)
         self._parallel_values[key] = value
 
     def get_parallel_value_for_key(self, key):
-        return self._parallel_values.get(key, "")
+        value = self._parallel_values.get(key, "")
+        if isinstance(value, LockedData):
+            value = value.value
+        return value
 
     def acquire_lock(self, name, caller_id):
         if name in self._locks and caller_id != self._locks[name][0]:
@@ -76,7 +89,7 @@ class _PabotLib(object):
     def acquire_value_set(self, caller_id):
         if not self._values:
             raise AssertionError(
-                'Value set cannot be aquired - it was never imported')
+                'Value set cannot be acquired - it was never imported')
         for k in self._values:
             if self._values[k] not in self._owner_to_values.values():
                 self._owner_to_values[caller_id] = self._values[k]
@@ -92,9 +105,10 @@ class _PabotLib(object):
             raise AssertionError('No value for key "%s"' % key)
         return self._owner_to_values[caller_id][key]
 
+
 class PabotLib(_PabotLib):
 
-    __version__ = 0.28
+    __version__ = 0.29
     ROBOT_LIBRARY_SCOPE = 'GLOBAL'
 
     def __init__(self):
