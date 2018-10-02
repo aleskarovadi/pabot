@@ -29,10 +29,11 @@ import time
 
 class LockedData(object):
 
-    def __init__(self, key, value):
-        self.id = key
-        self.value = value
-        self.lock_time = time.time()
+    def __init__(self, name, caller_id, lock_time=30000):
+        self.name = name
+        self.caller_id = caller_id
+        self.count = 0
+        self.due = time.time() + lock_time
 
 
 class _PabotLib(object):
@@ -55,28 +56,26 @@ class _PabotLib(object):
         return vals
 
     def set_parallel_value_for_key(self, key, value):
-        if value:
-            value = LockedData(key, value)
         self._parallel_values[key] = value
 
     def get_parallel_value_for_key(self, key):
-        value = self._parallel_values.get(key, "")
-        if isinstance(value, LockedData):
-            value = value.value
-        return value
+        return self._parallel_values.get(key, "")
 
     def acquire_lock(self, name, caller_id):
-        if name in self._locks and caller_id != self._locks[name][0]:
-            return False
+        if name in self._locks and caller_id != self._locks[name].caller_id:
+            if self._locks[name].due < time.time():
+                del self._locks[name]
+            else:
+                return False
         if name not in self._locks:
-            self._locks[name] = [caller_id, 0]
-        self._locks[name][1] += 1
+            self._locks[name] = LockedData(name, caller_id)
+        self._locks[name].count += 1
         return True
 
     def release_lock(self, name, caller_id):
-        assert self._locks[name][0] == caller_id
-        self._locks[name][1] -= 1
-        if self._locks[name][1] == 0:
+        assert self._locks[name].caller_id == caller_id
+        self._locks[name].count -= 1
+        if self._locks[name].count == 0:
             del self._locks[name]
 
     def release_locks(self, caller_id):
