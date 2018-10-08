@@ -80,9 +80,9 @@ class _PabotLib(object):
 
     def release_locks(self, caller_id):
         for key in self._locks.keys():
-            if self._locks[key][0] == caller_id:
-                self._locks[key][1] -= 1
-                if self._locks[key][1] == 0:
+            if self._locks[key].caller_id == caller_id:
+                self._locks[key].count -= 1
+                if self._locks[key].count == 0:
                     del self._locks[key]
 
     def acquire_value_set(self, caller_id):
