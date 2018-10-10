@@ -24,6 +24,7 @@ from robot.libraries.BuiltIn import BuiltIn
 from robotremoteserver import RobotRemoteServer
 from robot.libraries.Remote import Remote
 from robot.api import logger
+import argparse
 import time
 
 
@@ -274,7 +275,23 @@ class PabotLib(_PabotLib):
             _PabotLib.release_value_set(self, self._my_id)
 
 
+def parse_args():
+    """Parse arguments of command line.
+
+    Returns:
+        parsed command line arguments.
+    """
+    parser = argparse.ArgumentParser(description='Running PabotLib remote server.')
+    parser.add_argument('--resourcefile', action="store", dest='resourcefile', default=None,
+                        help="Indicator for a file that can contain shared variables for distributing resources")
+    parser.add_argument('--pabotlibhost', action="store", dest='pabotlibhost', default='127.0.0.1',
+                        help="Host name of the PabotLib remote server (default is 127.0.0.1)")
+    parser.add_argument('--pabotlibport', action="store", dest='pabotlibport', default='8270',
+                        help="Port number of the PabotLib remote server (default is 8270)")
+    return parser.parse_args()
+
+
 if __name__ == '__main__':
-    import sys
-    RobotRemoteServer(_PabotLib(sys.argv[1]), host=sys.argv[2],
-                      port=sys.argv[3], allow_stop=True)
+    args = parse_args()
+    RobotRemoteServer(_PabotLib(args.resourcefile), host=args.pabotlibhost,
+                      port=args.pabotlibport, allow_remote_stop=True)
