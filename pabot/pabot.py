@@ -96,7 +96,7 @@ POPEN_LOCK = threading.Lock()
 _PABOTLIBURI = '127.0.0.1:8270'
 _PABOTLIBPROCESS = None
 ARGSMATCHER = re.compile(r'--argumentfile(\d+)')
-_BOURNELIKE_SHELL_BAD_CHARS_WITHOUT_DQUOTE = "!#$^&*?[(){}<>~;'`\\|= \t\n" # does not contain '"'
+_BOURNELIKE_SHELL_BAD_CHARS_WITHOUT_DQUOTE = "!#$^&*?[(){}<>~;'`\\|= \t\n"  # does not contain '"'
 
 
 class Color:
@@ -138,7 +138,8 @@ def execute_and_wait_with(args):
         if _PABOTLIBPROCESS or _PABOTLIBURI != '127.0.0.1:8270':
             Remote(_PABOTLIBURI).run_keyword('release_locks', [caller_id], {})
     else:
-        _write_with_id(process, pool_id, _execution_passed_message(suite_name, stdout, stderr, elapsed, verbose), Color.GREEN)
+        _write_with_id(process, pool_id, _execution_passed_message(suite_name, stdout, stderr, elapsed, verbose),
+                       Color.GREEN)
 
 
 def _write_with_id(process, pool_id, message, color=None, timestamp=None):
@@ -169,7 +170,8 @@ def _run(cmd, stderr, stdout, suite_name, verbose, pool_id):
                                    stderr=stderr,
                                    stdout=stdout)
     if verbose:
-        _write_with_id(process, pool_id, 'EXECUTING PARALLEL SUITE %s with command:\n%s' % (suite_name, cmd),timestamp=timestamp)
+        _write_with_id(process, pool_id, 'EXECUTING PARALLEL SUITE %s with command:\n%s' % (suite_name, cmd),
+                       timestamp=timestamp)
     else:
         _write_with_id(process, pool_id, 'EXECUTING %s' % suite_name, timestamp=timestamp)
     return process, _wait_for_return_code(process, suite_name, pool_id)
@@ -191,6 +193,7 @@ def _wait_for_return_code(process, suite_name, pool_id):
                            % (suite_name, elapsed / 10.0, ping_interval / 10.0))
     return rc, elapsed / 10.0
 
+
 def _read_file(file_handle):
     try:
         with open(file_handle.name, 'r') as content_file:
@@ -199,15 +202,19 @@ def _read_file(file_handle):
     except:
         return 'Unable to read file %s' % file_handle
 
+
 def _execution_failed_message(suite_name, stdout, stderr, rc, verbose):
     if not verbose:
         return 'FAILED %s' % suite_name
-    return 'Execution failed in %s with %d failing test(s)\n%s\n%s' % (suite_name, rc, _read_file(stdout), _read_file(stderr))
+    return 'Execution failed in %s with %d failing test(s)\n%s\n%s' % (
+        suite_name, rc, _read_file(stdout), _read_file(stderr))
+
 
 def _execution_passed_message(suite_name, stdout, stderr, elapsed, verbose):
     if not verbose:
         return 'PASSED %s in %s seconds' % (suite_name, elapsed)
     return 'PASSED %s in %s seconds\n%s\n%s' % (suite_name, elapsed, _read_file(stdout), _read_file(stderr))
+
 
 def _options_for_custom_executor(*args):
     return _options_to_cli_arguments(_options_for_executor(*args))
@@ -509,7 +516,7 @@ def _parallel_execute(datasources, options, outs_dir, pabot_args, suite_names):
                             ((datasources, outs_dir, options, suite,
                               pabot_args['command'], pabot_args['verbose'], argfile)
                              for suite in suite_names
-                             for argfile in pabot_args['argumentfiles'] or [("", None)]),1)
+                             for argfile in pabot_args['argumentfiles'] or [("", None)]), 1)
     pool.close()
     while not result.ready():
         # keyboard interrupt is executed in main thread
@@ -636,13 +643,13 @@ def _start_remote_library(pabot_args):
         _write('Warning: specified resource file doesn\'t exist.'
                ' Some tests may fail or continue forever.', Color.YELLOW)
         pabot_args['resourcefile'] = None
-    return subprocess.Popen('{python} {pabotlibpath} {resourcefile} {pabotlibhost} {pabotlibport}'.format(
-        python=sys.executable,
-        pabotlibpath=os.path.abspath(pabotlib.__file__),
-        resourcefile=pabot_args.get('resourcefile'),
-        pabotlibhost=pabot_args['pabotlibhost'],
-        pabotlibport=pabot_args['pabotlibport']),
-        shell=True)
+    return subprocess.Popen('{python} {pabotlibpath} --resourcefile {resourcefile} --pabotlibhost {pabotlibhost} '
+                            '--pabotlibport {pabotlibport}'.format(python=sys.executable,
+                                                                   pabotlibpath=os.path.abspath(pabotlib.__file__),
+                                                                   resourcefile=pabot_args.get('resourcefile'),
+                                                                   pabotlibhost=pabot_args['pabotlibhost'],
+                                                                   pabotlibport=pabot_args['pabotlibport']),
+                            shell=True)
 
 
 def _stop_remote_library(process):
