@@ -80,6 +80,7 @@ from functools import total_ordering
 import shutil
 import subprocess
 import threading
+import traceback
 from contextlib import contextmanager
 from robot import run, rebot
 from robot import __version__ as ROBOT_VERSION
@@ -157,7 +158,8 @@ def _try_execute_and_wait(cmd, outs_dir, item_name, verbose, pool_id, caller_id,
             with open(os.path.join(outs_dir, cmd[0]+'_stderr.out'), 'w') as stderr:
                 process, (rc, elapsed) = _run(cmd, stderr, stdout, item_name, verbose, pool_id)
     except:
-        print(sys.exc_info()[0])
+        exc_type, exc_value, exc_traceback = sys.exc_info()[0]
+        traceback.print_exception(exc_type, exc_value, exc_traceback)
     if plib:
         _increase_completed(plib, my_index)
     # Thread-safe list append
