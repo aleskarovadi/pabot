@@ -159,7 +159,7 @@ def _try_execute_and_wait(cmd, outs_dir, item_name, verbose, pool_id, caller_id,
                 process, (rc, elapsed) = _run(cmd, stderr, stdout, item_name, verbose, pool_id)
     except:
         exc_type, exc_value, exc_traceback = sys.exc_info()[0]
-        traceback.print_exception(exc_type, exc_value, exc_traceback)
+        print(''.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
     if plib:
         _increase_completed(plib, my_index)
     # Thread-safe list append
@@ -194,7 +194,7 @@ def outputxml_preprocessing(options, outs_dir, item_name, verbose, pool_id, call
         if verbose: _write("%s [main] [%s] Filesize reduced from %s to %s (%0.2f%%) for file %s" % (datetime.datetime.now(), pool_id, oldsize, newsize, perc, outputxmlfile))
     except:
         exc_type, exc_value, exc_traceback = sys.exc_info()[0]
-        traceback.print_exception(exc_type, exc_value, exc_traceback)
+        print(''.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
 
 
 def _write_with_id(process, pool_id, message, color=None, timestamp=None):
