@@ -193,7 +193,8 @@ def outputxml_preprocessing(options, outs_dir, item_name, verbose, pool_id, call
         perc = 100*newsize/oldsize
         if verbose: _write("%s [main] [%s] Filesize reduced from %s to %s (%0.2f%%) for file %s" % (datetime.datetime.now(), pool_id, oldsize, newsize, perc, outputxmlfile))
     except:
-        print(sys.exc_info())
+        exc_type, exc_value, exc_traceback = sys.exc_info()[0]
+        traceback.print_exception(exc_type, exc_value, exc_traceback)
 
 
 def _write_with_id(process, pool_id, message, color=None, timestamp=None):
