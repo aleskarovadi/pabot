@@ -158,7 +158,7 @@ def _try_execute_and_wait(cmd, outs_dir, item_name, verbose, pool_id, caller_id,
             with open(os.path.join(outs_dir, cmd[0]+'_stderr.out'), 'w') as stderr:
                 process, (rc, elapsed) = _run(cmd, stderr, stdout, item_name, verbose, pool_id)
     except:
-        exc_type, exc_value, exc_traceback = sys.exc_info()[0]
+        exc_type, exc_value, exc_traceback = sys.exc_info()
         print(''.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
     if plib:
         _increase_completed(plib, my_index)
@@ -193,7 +193,7 @@ def outputxml_preprocessing(options, outs_dir, item_name, verbose, pool_id, call
         perc = 100*newsize/oldsize
         if verbose: _write("%s [main] [%s] Filesize reduced from %s to %s (%0.2f%%) for file %s" % (datetime.datetime.now(), pool_id, oldsize, newsize, perc, outputxmlfile))
     except:
-        exc_type, exc_value, exc_traceback = sys.exc_info()[0]
+        exc_type, exc_value, exc_traceback = sys.exc_info()
         print(''.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
 
 
@@ -1352,7 +1352,7 @@ def main(args=None):
         print_message("output_dir: {}".format(outs_dir))
         suite_names = solve_suite_names(outs_dir, datasources, options,
                                         pabot_args)
-        print_message("suite names ({}): {}".format(len(suite_names), suite_names))
+        print_message("suite names ({}): {}".format(len(suite_names[0]), suite_names))
         if suite_names:
             for items in _create_execution_items(
                 suite_names, datasources, outs_dir, 
