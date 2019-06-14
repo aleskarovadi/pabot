@@ -1321,15 +1321,24 @@ def _initialize_queue_index():
     raise RuntimeError('Can not connect to PabotLib at %s' % _PABOTLIBURI)
 
 
+def print_message(message):
+    print(">> Pabot: {m}".format(m=message))
+
+
 def main(args=None):
+    print_message("Start pabot.main()")
     global _PABOTLIBPROCESS
     args = args or sys.argv[1:]
+    print_message("args: {}".format(args))
     start_time = time.time()
     start_time_string = _now()
     # NOTE: timeout option
     try:
         _start_message_writer()
         options, datasources, pabot_args, opts_for_run = _parse_args(args)
+        message = "parse args:\n- options: {}\n- datasources: {}\npabot_args: {}\nopt_for_run: {}".format(
+            options, datasources, pabot_args, opts_for_run)
+        print_message(message)
         if pabot_args['tutorial']:
             _run_tutorial()
             sys.exit(0)
@@ -1340,8 +1349,10 @@ def main(args=None):
         if _PABOTLIBPROCESS or _PABOTLIBURI != '127.0.0.1:8270':
             _initialize_queue_index()
         outs_dir = _output_dir(options)
+        print_message("output_dir: {}".format(outs_dir))
         suite_names = solve_suite_names(outs_dir, datasources, options,
                                         pabot_args)
+        print_message("suite names ({}): {}".format(len(suite_names), suite_names))
         if suite_names:
             for items in _create_execution_items(
                 suite_names, datasources, outs_dir, 
